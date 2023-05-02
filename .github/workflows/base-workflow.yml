@@ -1,0 +1,122 @@
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      working_directory:
+        required: true
+        type: string
+      tf_version:
+        default: latest
+        required: false
+        type: string
+      apply_if:
+        default: true
+        required: false
+        type: boolean
+    secrets:
+      azure_tenant_id:
+        required: true
+      azure_subscription_id:
+        required: true
+      azure_client_id:
+        required: true
+      azure_client_secret:
+        required: true        
+
+jobs:    
+  plan-and-apply:
+    name: Plan&Apply
+    runs-on: ubuntu-latest
+    env:
+      ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
+      ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+      ARM_CLIENT_SECRET: ${{secrets.azure_client_secret}}  
+
+    permissions:
+      id-token: write
+      contents: read
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working_directory}}
+
+    steps: 
+
+      - name: 'Azure login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}   
+
+      - name: Git checkout
+        uses: actions/checkout@v3.2.0
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: 1.4.4
+
+      - name: Terraform Init      
+        id: init
+        run: terraform init -upgrade
+
+      - name: Terraform Format
+        id: fmt
+        continue-on-error: true
+        run: terraform fmt -check -recursive -diff
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out tfplan.out
+          
+      - name: Terraform Plan Show
+        id: plan-show
+        run: terraform show tfplan.out -no-color
+
+        
+      - name: Update Pull Request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6.3.3
+        continue-on-error: true
+        env:
+          PLAN: "${{ steps.plan-show.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Environment ➡️\`${{ inputs.environment }}\`
+            #### Terraform Format and Style ➡️\`${{ steps.fmt.outcome }}\`
+            ☁️☁️☁️
+            <details>
+              <summary>Show Plan</summary>
+
+              \`\`\`
+              ${process.env.PLAN}
+              \`\`\`
+
+            </details>
+            🌋🔥➡️
+            Pusher: @${{ github.actor }}, Action: ${{ github.event_name }}`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })      
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: ${{ inputs.apply_if }}
+        run: terraform apply -auto-approve tfplan.out
