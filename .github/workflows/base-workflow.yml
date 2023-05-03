@@ -29,12 +29,12 @@ jobs:
   plan-and-apply:
     name: Plan&Apply
     runs-on: ubuntu-latest
+    environment: ${{inputs.environment}}
     env:
       ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
       ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
       ARM_CLIENT_SECRET: ${{secrets.azure_client_secret}}  
-
     defaults:
       run:
         shell: bash
