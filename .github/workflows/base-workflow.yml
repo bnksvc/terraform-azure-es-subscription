@@ -21,14 +21,10 @@ jobs:
     name: Plan&Apply
     runs-on: ubuntu-latest
     env:
-      # ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
-      # ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
-      # ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
-      # ARM_CLIENT_SECRET: ${{secrets.azure_client_secret}}  
-      ARM_CLIENT_ID: ${{secrets.TF_ARM_CLIENT_ID}}
-      ARM_CLIENT_SECRET: ${{secrets.TF_ARM_CLIENT_SECRET}}
-      ARM_SUBSCRIPTION_ID: ${{secrets.TF_ARM_SUBSCRIPTION_ID}}
-      ARM_TENANT_ID: ${{secrets.TF_ARM_TENANT_ID}}
+      ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
+      ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+      ARM_CLIENT_SECRET: ${{secrets.azure_client_secret}}  
 
     defaults:
       run:
