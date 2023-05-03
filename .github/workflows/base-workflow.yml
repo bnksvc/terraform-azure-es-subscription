@@ -15,29 +15,29 @@ on:
         default: true
         required: false
         type: boolean
-    # secrets:
-    #   azure_tenant_id:
-    #     required: true
-    #   azure_subscription_id:
-    #     required: true
-    #   azure_client_id:
-    #     required: true
-    #   azure_client_secret:
-    #     required: true        
+    secrets:
+      azure_tenant_id:
+        required: true
+      azure_subscription_id:
+        required: true
+      azure_client_id:
+        required: true
+      azure_client_secret:
+        required: true        
 
 jobs:    
   plan-and-apply:
     name: Plan&Apply
     runs-on: ubuntu-latest
     env:
-      # ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
-      # ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
-      # ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
-      # ARM_CLIENT_SECRET: ${{secrets.azure_client_secret}}  
-      ARM_TENANT_ID: ${{secrets.TF_ARM_TENANT_ID}}
-      ARM_SUBSCRIPTION_ID: ${{secrets.TF_ARM_SUBSCRIPTION_ID}}
-      ARM_CLIENT_ID: ${{secrets.TF_ARM_CLIENT_ID}}
-      ARM_CLIENT_SECRET: ${{secrets.TF_ARM_CLIENT_SECRET}}
+      ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
+      ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+      ARM_CLIENT_SECRET: ${{secrets.azure_client_secret}}  
+      # ARM_TENANT_ID: ${{secrets.TF_ARM_TENANT_ID}}
+      # ARM_SUBSCRIPTION_ID: ${{secrets.TF_ARM_SUBSCRIPTION_ID}}
+      # ARM_CLIENT_ID: ${{secrets.TF_ARM_CLIENT_ID}}
+      # ARM_CLIENT_SECRET: ${{secrets.TF_ARM_CLIENT_SECRET}}
 
     # permissions:
     #   id-token: write
