@@ -14,7 +14,16 @@ on:
       apply_if:
         default: true
         required: false
-        type: boolean    
+        type: boolean
+    secrets:
+      azure_tenant_id:
+        required: true
+      azure_subscription_id:
+        required: true
+      azure_client_id:
+        required: true
+      azure_client_secret:
+        required: true        
 
 jobs:    
   plan-and-apply:
