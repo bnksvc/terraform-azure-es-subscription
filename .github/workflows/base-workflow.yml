@@ -34,29 +34,14 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
       ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
       ARM_CLIENT_SECRET: ${{secrets.azure_client_secret}}  
-      # ARM_TENANT_ID: ${{secrets.TF_ARM_TENANT_ID}}
-      # ARM_SUBSCRIPTION_ID: ${{secrets.TF_ARM_SUBSCRIPTION_ID}}
-      # ARM_CLIENT_ID: ${{secrets.TF_ARM_CLIENT_ID}}
-      # ARM_CLIENT_SECRET: ${{secrets.TF_ARM_CLIENT_SECRET}}
-
-    # permissions:
-    #   id-token: write
-    #   contents: read
 
     defaults:
       run:
         shell: bash
         working-directory: ${{ inputs.working_directory}}
 
-    steps: 
-
-      # - name: 'Azure login'
-      #   uses: azure/login@v1
-      #   with:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}   
-
+    steps:    
+    
       - name: Git checkout
         uses: actions/checkout@v3.2.0
 
